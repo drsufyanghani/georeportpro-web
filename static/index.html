@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GeoReportPro Web</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandmark">G</div>
+      <div>
+        <h1>GeoReportPro</h1>
+        <p>IS-referenced geotechnical investigation & report automation</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="hide-mobile" onclick="runQC()">Run QC</button>
+      <button onclick="downloadReport()">Export Word Report</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="nav-label">Workspace</div>
+      <button class="nav-btn active" data-page="dashboard"><span class="icon">01</span>Dashboard</button>
+      <button class="nav-btn" data-page="project"><span class="icon">02</span>Project Details</button>
+      <button class="nav-btn" data-page="import"><span class="icon">03</span>Workbook Import</button>
+      <button class="nav-btn" data-page="classification"><span class="icon">04</span>Soil Classification</button>
+      <button class="nav-btn" data-page="compaction"><span class="icon">05</span>Compaction</button>
+      <button class="nav-btn" data-page="cbr"><span class="icon">06</span>CBR</button>
+      <button class="nav-btn" data-page="spt"><span class="icon">07</span>SPT</button>
+      <button class="nav-btn" data-page="bearing"><span class="icon">08</span>Bearing Capacity</button>
+      <button class="nav-btn" data-page="figures"><span class="icon">09</span>Figures</button>
+      <button class="nav-btn" data-page="summary"><span class="icon">10</span>Summary & Report</button>
+      <div class="side-note">
+        Web edition v1.0<br>
+        Calculation logic migrated from the desktop PoC.<br><br>
+        Engineering review and sign-off remain mandatory.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section id="page-dashboard" class="page active">
+        <div class="hero card">
+          <h2>Consultancy-grade geotechnical reporting, now in the browser.</h2>
+          <p>Import borehole and laboratory data, run transparent calculation support, review QC findings, generate figures and export a professional Word report — without installing a desktop EXE.</p>
+          <div class="hero-actions">
+            <button class="btn primary" onclick="showPage('import')">Import workbook</button>
+            <button class="btn" onclick="showPage('project')">Set project details</button>
+          </div>
+        </div>
+
+        <div class="grid grid-6 section-gap" id="dashboard-metrics">
+          <div class="card metric"><div class="label">Project</div><div class="value" id="m-project">Not set</div><div class="hint" id="m-project-sub">Add details or import workbook</div></div>
+          <div class="card metric"><div class="label">Boreholes</div><div class="value" id="m-boreholes">--</div><div class="hint">Imported borehole records</div></div>
+          <div class="card metric"><div class="label">Soil Class</div><div class="value" id="m-soil">--</div><div class="hint" id="m-soil-sub">Classification pending</div></div>
+          <div class="card metric"><div class="label">Design CBR</div><div class="value" id="m-cbr">--</div><div class="hint">IS 2720 Part 16 support</div></div>
+          <div class="card metric"><div class="label">Safe Bearing</div><div class="value" id="m-sbc">--</div><div class="hint">Preliminary check only</div></div>
+          <div class="card metric"><div class="label">QC Status</div><div class="value" id="m-qc">Pending</div><div class="hint" id="m-qc-sub">Import data and run QC</div></div>
+        </div>
+
+        <div class="grid grid-2 section-gap">
+          <div class="card">
+            <h3>Consultancy Workflow</h3>
+            <p class="sub">The web version follows the same engineering workflow as the desktop PoC.</p>
+            <div class="result-box">1. Import professional Excel workbook
+2. Review project metadata, borehole logs and laboratory data
+3. Run completeness, range and PSD consistency QC
+4. Review calculation outputs and IS references
+5. Review sample-wise and borehole-wise figures
+6. Export a professional Word report
+7. Qualified engineer validates and signs off final values</div>
+          </div>
+          <div class="card">
+            <h3>Engineering Position</h3>
+            <p class="sub">Automated results support engineering review; they do not replace it.</p>
+            <div class="alert warn">Final values, classifications, correlations, assumptions and recommendations must be checked, validated and approved by a qualified geotechnical engineer before client issue.</div>
+            <div class="inline-actions">
+              <button class="btn primary" onclick="showPage('figures')">View figures</button>
+              <button class="btn" onclick="showPage('summary')">Open summary</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-project" class="page">
+        <div class="page-head"><div><div class="eyebrow">Project setup</div><h2>Project Details</h2><p>Metadata used in the generated geotechnical report.</p></div><span class="status-pill"><span class="status-dot"></span>Browser session</span></div>
+        <div class="card">
+          <h3>Project Metadata</h3><p class="sub">Save details to this browser session. A workbook Project sheet can also populate these fields.</p>
+          <div class="form-grid">
+            <div class="field"><label>Project Name</label><input id="project_name" placeholder="Demo Geotechnical Investigation"></div>
+            <div class="field"><label>Client Name</label><input id="client_name" placeholder="ABC Infrastructure Pvt. Ltd."></div>
+            <div class="field"><label>Location</label><input id="location" placeholder="City, State"></div>
+            <div class="field"><label>Report Number</label><input id="report_number" placeholder="GIR-2026-001-Rev0"></div>
+            <div class="field"><label>Prepared By</label><input id="prepared_by" placeholder="Engineer name"></div>
+            <div class="field"><label>Checked By</label><input id="checked_by" placeholder="Reviewer name"></div>
+            <div class="field"><label>Approved By</label><input id="approved_by" placeholder="Approver name"></div>
+            <div class="field"><label>Report Date</label><input id="report_date" type="date"></div>
+            <div class="field span-2"><label>Remarks</label><textarea id="remarks" placeholder="Scope notes, assumptions or limitations..."></textarea></div>
+          </div>
+          <div class="inline-actions section-gap"><button class="btn primary" onclick="saveProject()">Save Project Details</button></div>
+        </div>
+      </section>
+
+      <section id="page-import" class="page">
+        <div class="page-head"><div><div class="eyebrow">Data intake</div><h2>Borehole Excel Import</h2><p>Upload the consultancy workbook. Data are read in memory for your current web session.</p></div></div>
+        <div class="card">
+          <h3>Import Workbook</h3>
+          <p class="sub">Expected sheets: Project, Boreholes, SPT, Lab_Summary, PSD, Compaction, CBR and Bearing_Input.</p>
+          <div class="inline-actions"><input id="excel-file" type="file" accept=".xlsx,.xls"><button class="btn primary" onclick="uploadWorkbook()">Upload & Process</button><span class="muted" id="excel-name">No workbook loaded</span></div>
+          <div class="alert info">Demo upload limit: 20 MB. On the free Render demo, workbook/session data are not persistent after the service restarts or spins down.</div>
+        </div>
+        <div class="card section-gap">
+          <h3>Imported Data Preview</h3><p class="sub">Up to 30 rows are shown per sheet after upload.</p>
+          <div id="preview-tabs" class="tabs"></div>
+          <div id="preview-container" class="table-wrap"><div style="padding:24px" class="muted">Upload a workbook to preview its sheets.</div></div>
+        </div>
+      </section>
+
+      <section id="page-classification" class="page">
+        <div class="page-head"><div><div class="eyebrow">Laboratory interpretation</div><h2>Atterberg Limits & Soil Classification</h2><p>IS 2720 Part 5 parameters and IS 1498 classification support.</p></div></div>
+        <div class="card">
+          <h3>Input Parameters</h3>
+          <div class="form-grid three">
+            <div class="field"><label>Liquid Limit, LL (%)</label><input id="ll" type="number" step="any"></div>
+            <div class="field"><label>Plastic Limit, PL (%)</label><input id="pl" type="number" step="any"></div>
+            <div class="field"><label>Natural Water Content (%)</label><input id="water_content" type="number" step="any"></div>
+            <div class="field"><label>Gravel (%)</label><input id="gravel" type="number" step="any"></div>
+            <div class="field"><label>Sand (%)</label><input id="sand" type="number" step="any"></div>
+            <div class="field"><label>Fines (%)</label><input id="fines" type="number" step="any"></div>
+          </div>
+          <div class="inline-actions section-gap"><button class="btn primary" onclick="runClassification()">Calculate & Classify Soil</button></div>
+        </div>
+        <div class="grid grid-2 section-gap">
+          <div class="card"><h3>Results & Standard Reference</h3><div id="classification-result" class="result-box">No classification calculated yet.</div></div>
+          <div class="card plot-card"><div class="plot-title"><h3>Plasticity Chart</h3><button class="btn small" onclick="refreshPlot('plasticity')">Refresh</button></div><img id="plot-plasticity" alt="Plasticity chart"></div>
+        </div>
+      </section>
+
+      <section id="page-compaction" class="page">
+        <div class="page-head"><div><div class="eyebrow">Laboratory interpretation</div><h2>Compaction Test</h2><p>Observed OMC/MDD remains the adopted reporting position; the fitted curve is indicative.</p></div></div>
+        <div class="card">
+          <h3>Compaction Data</h3>
+          <div class="table-wrap"><table class="data-table"><thead><tr><th>Water Content (%)</th><th>Wet Density (g/cc)</th><th></th></tr></thead><tbody id="compaction-rows"></tbody></table></div>
+          <div class="inline-actions section-gap"><button class="btn" onclick="addCompactionRow()">Add Row</button><button class="btn primary" onclick="runCompaction()">Calculate OMC & MDD</button></div>
+        </div>
+        <div class="grid grid-2 section-gap">
+          <div class="card"><h3>Results & Adoption Note</h3><div id="compaction-result" class="result-box">No compaction calculation completed yet.</div></div>
+          <div class="card plot-card"><div class="plot-title"><h3>Compaction Curve</h3><button class="btn small" onclick="refreshPlot('compaction')">Refresh</button></div><img id="plot-compaction" alt="Compaction curve"></div>
+        </div>
+      </section>
+
+      <section id="page-cbr" class="page">
+        <div class="page-head"><div><div class="eyebrow">Laboratory interpretation</div><h2>California Bearing Ratio</h2><p>CBR support using IS 2720 Part 16 standard loads.</p></div></div>
+        <div class="card">
+          <h3>CBR Input</h3>
+          <div class="form-grid">
+            <div class="field"><label>Load at 2.5 mm (kg)</label><input id="load_2_5" type="number" step="any"></div>
+            <div class="field"><label>Load at 5.0 mm (kg)</label><input id="load_5_0" type="number" step="any"></div>
+            <div class="field span-2"><label><input id="cbr_confirm" type="checkbox" style="width:auto;min-height:auto;margin-right:8px">Adopt 5.0 mm value if higher only because repeat-test confirmation is available</label></div>
+          </div>
+          <div class="inline-actions section-gap"><button class="btn primary" onclick="runCBR()">Calculate CBR</button></div>
+        </div>
+        <div class="grid grid-2 section-gap">
+          <div class="card"><h3>Results & Adoption Rule</h3><div id="cbr-result" class="result-box">No CBR calculation completed yet.</div></div>
+          <div class="card plot-card"><div class="plot-title"><h3>CBR Load-Penetration Curve</h3><button class="btn small" onclick="refreshPlot('cbr')">Refresh</button></div><img id="plot-cbr" alt="CBR curve"></div>
+        </div>
+      </section>
+
+      <section id="page-spt" class="page">
+        <div class="page-head"><div><div class="eyebrow">Field test interpretation</div><h2>Standard Penetration Test</h2><p>Manual single-test calculation plus imported borehole-wise SPT profile.</p></div></div>
+        <div class="card">
+          <h3>Manual Single SPT Test Calculator</h3>
+          <div class="form-grid three">
+            <div class="field"><label>Blows 0-150 mm (seating)</label><input id="spt_b1" type="number"></div>
+            <div class="field"><label>Blows 150-300 mm</label><input id="spt_b2" type="number"></div>
+            <div class="field"><label>Blows 300-450 mm</label><input id="spt_b3" type="number"></div>
+            <div class="field"><label>Engineer-entered correction factor</label><input id="spt_cf" type="number" step="any"></div>
+            <div class="field"><label>Saturated fine sand/silt?</label><select id="spt_sat"><option value="false">No</option><option value="true">Yes</option></select></div>
+          </div>
+          <div class="inline-actions section-gap"><button class="btn primary" onclick="runSPT()">Calculate Single SPT Test</button></div>
+        </div>
+        <div class="grid grid-2 section-gap">
+          <div class="card"><h3>Single Test Result</h3><div id="spt-result" class="result-box">No SPT calculation completed yet.</div></div>
+          <div class="card plot-card"><div class="plot-title"><h3>Imported SPT Profile</h3><button class="btn small" onclick="refreshPlot('spt')">Refresh</button></div><img id="plot-spt" alt="SPT profile"></div>
+        </div>
+      </section>
+
+      <section id="page-bearing" class="page">
+        <div class="page-head"><div><div class="eyebrow">Foundation screening</div><h2>Bearing Capacity</h2><p>Preliminary Terzaghi-style bearing estimate with explicit limitation against final IS 6403 design.</p></div></div>
+        <div class="card">
+          <h3>Foundation Input</h3>
+          <div class="form-grid three">
+            <div class="field"><label>Foundation Type</label><select id="foundation_type"><option>Strip</option><option>Square</option><option>Rectangular</option><option>Circular</option></select></div>
+            <div class="field"><label>Width / Diameter B (m)</label><input id="width" type="number" step="any"></div>
+            <div class="field"><label>Foundation Depth Df (m)</label><input id="depth" type="number" step="any"></div>
+            <div class="field"><label>Cohesion c (kPa)</label><input id="cohesion" type="number" step="any"></div>
+            <div class="field"><label>Unit Weight γ (kN/m³)</label><input id="unit_weight" type="number" step="any"></div>
+            <div class="field"><label>Friction Angle φ (deg)</label><input id="phi" type="number" step="any"></div>
+            <div class="field"><label>Factor of Safety</label><input id="fos" type="number" step="any"></div>
+          </div>
+          <div class="alert warn">This module is deliberately preliminary. Final bearing pressure must consider project-specific IS 6403 requirements, settlement, groundwater, eccentricity/inclination and qualified engineering judgement.</div>
+          <div class="inline-actions"><button class="btn primary" onclick="runBearing()">Calculate Preliminary Bearing Capacity</button></div>
+        </div>
+        <div class="card section-gap"><h3>Results & Limitation</h3><div id="bearing-result" class="result-box">No bearing calculation completed yet.</div></div>
+      </section>
+
+      <section id="page-figures" class="page">
+        <div class="page-head"><div><div class="eyebrow">Visualization</div><h2>Engineering Figures</h2><p>Sample-wise and borehole-wise figures generated by the Python backend.</p></div></div>
+        <div class="card">
+          <h3>Figure Filters</h3>
+          <div class="form-grid three">
+            <div class="field"><label>Borehole ID</label><select id="figure_borehole"><option value="">All Boreholes</option></select></div>
+            <div class="field"><label>Sample ID</label><select id="figure_sample"><option value="">Auto / First Sample</option></select></div>
+            <div class="field"><label>SPT Plot Value</label><select id="figure_spt_value"><option>Raw N</option><option>Corrected N</option><option>Dilatancy-corrected N</option></select></div>
+          </div>
+          <div class="inline-actions section-gap"><button class="btn primary" onclick="refreshAllPlots()">Refresh All Figures</button></div>
+        </div>
+        <div class="grid grid-2 section-gap">
+          <div class="card plot-card"><div class="plot-title"><h3>Borehole Log / Soil Profile</h3></div><img id="plot-borehole" alt="Borehole log"></div>
+          <div class="card plot-card"><div class="plot-title"><h3>Particle Size Distribution</h3></div><img id="plot-psd" alt="PSD"></div>
+          <div class="card plot-card"><div class="plot-title"><h3>Plasticity Chart</h3></div><img id="plot-fig-plasticity" alt="Plasticity chart"></div>
+          <div class="card plot-card"><div class="plot-title"><h3>Compaction Curve</h3></div><img id="plot-fig-compaction" alt="Compaction curve"></div>
+          <div class="card plot-card"><div class="plot-title"><h3>CBR Curve</h3></div><img id="plot-fig-cbr" alt="CBR curve"></div>
+          <div class="card plot-card"><div class="plot-title"><h3>SPT N vs Depth</h3></div><img id="plot-fig-spt" alt="SPT profile"></div>
+        </div>
+      </section>
+
+      <section id="page-summary" class="page">
+        <div class="page-head"><div><div class="eyebrow">Deliverable review</div><h2>Summary & Report</h2><p>Review key results, standards, QC findings and export the Word report.</p></div></div>
+        <div class="summary-metrics">
+          <div class="card metric"><div class="label">Plasticity Index</div><div class="value" id="s-pi">--</div><div class="hint" id="s-pi-sub">Pending</div></div>
+          <div class="card metric"><div class="label">Soil Symbol</div><div class="value" id="s-soil">--</div><div class="hint" id="s-soil-sub">Pending</div></div>
+          <div class="card metric"><div class="label">Observed MDD</div><div class="value" id="s-mdd">--</div><div class="hint" id="s-mdd-sub">Pending</div></div>
+          <div class="card metric"><div class="label">Design CBR</div><div class="value" id="s-cbr">--</div><div class="hint" id="s-cbr-sub">Pending</div></div>
+          <div class="card metric"><div class="label">Selected SPT</div><div class="value" id="s-spt">--</div><div class="hint" id="s-spt-sub">Pending</div></div>
+          <div class="card metric"><div class="label">Safe Bearing</div><div class="value" id="s-sbc">--</div><div class="hint">Preliminary</div></div>
+        </div>
+        <div class="grid grid-2 section-gap">
+          <div class="card"><h3>Consolidated Interpretation</h3><div id="summary-text" class="result-box">No calculations completed yet.</div></div>
+          <div class="card"><h3>Automated QC / Data Completeness</h3><div id="qc-text" class="result-box">Run QC after importing a workbook.</div></div>
+        </div>
+        <div class="card section-gap"><h3>Reference Standards / Methods Used</h3><div id="standards-text" class="result-box"></div></div>
+        <div class="inline-actions section-gap"><button class="btn" onclick="runQC()">Refresh QC</button><button class="btn primary" onclick="downloadReport()">Export Professional Word Report</button></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="loader" class="loader"><div class="loader-box"><div class="spinner"></div><span id="loader-text">Working...</span></div></div>
+  <div id="toast" class="toast"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
