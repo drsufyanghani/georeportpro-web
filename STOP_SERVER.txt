@@ -1,0 +1,1 @@
+To stop GeoReportPro, go to the window titled "GeoReportPro Server" and press Ctrl+C, then close that window.
